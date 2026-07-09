@@ -1,0 +1,499 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GetAJobOS</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Press Start 2P', cursive;
+            background: #000;
+            color: #0f0;
+            overflow: hidden;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .phone {
+            width: 380px;
+            height: 720px;
+            background: #111;
+            border: 12px solid #222;
+            border-radius: 50px;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 0 30px rgba(0, 255, 0, 0.5);
+        }
+        
+        .boot-screen {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #000;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: #0f0;
+            z-index: 100;
+        }
+        
+        .logo {
+            font-size: 28px;
+            margin-bottom: 30px;
+            text-shadow: 0 0 10px #0f0;
+            animation: glitch 1s infinite;
+        }
+        
+        .loading {
+            font-size: 18px;
+            animation: blink 1s infinite;
+        }
+        
+        .home-screen {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #1a0033, #003300);
+            display: none;
+            flex-direction: column;
+        }
+        
+        .status-bar {
+            height: 30px;
+            background: rgba(0, 0, 0, 0.7);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 20px;
+            font-size: 12px;
+            color: #0f0;
+        }
+        
+        .wallpaper-text {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 32px;
+            color: rgba(255, 255, 255, 0.15);
+            text-align: center;
+            pointer-events: none;
+            text-shadow: 0 0 20px #0f0;
+        }
+        
+        .apps {
+            position: absolute;
+            bottom: 90px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 40px;
+        }
+        
+        .app-icon {
+            width: 70px;
+            height: 70px;
+            background: #222;
+            border: 4px solid #0f0;
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            color: #0f0;
+            font-size: 10px;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-align: center;
+        }
+        
+        .app-icon:hover {
+            transform: scale(1.1);
+            box-shadow: 0 0 20px #0f0;
+        }
+        
+        .browser-icon { background: #0066ff; }
+        .trick-icon { background: #ff00ff; }
+        
+        .modal {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #000;
+            display: none;
+            flex-direction: column;
+            z-index: 200;
+        }
+        
+        .modal-header {
+            height: 50px;
+            background: #222;
+            display: flex;
+            align-items: center;
+            padding: 0 15px;
+            justify-content: space-between;
+            font-size: 14px;
+        }
+        
+        .close-btn {
+            color: #f00;
+            cursor: pointer;
+            font-size: 20px;
+        }
+        
+        .browser-content {
+            flex: 1;
+            padding: 15px;
+            overflow-y: auto;
+        }
+        
+        .fake-search {
+            width: 100%;
+            padding: 12px;
+            background: #222;
+            border: 2px solid #0f0;
+            color: #0f0;
+            margin-bottom: 20px;
+            font-family: inherit;
+        }
+        
+        .search-results {
+            margin-top: 20px;
+        }
+        
+        .fake-link {
+            background: #003300;
+            border: 2px solid #0f0;
+            padding: 15px;
+            margin: 15px 0;
+            cursor: pointer;
+            color: #0ff;
+        }
+        
+        .installer {
+            text-align: center;
+            padding: 30px;
+        }
+        
+        button {
+            background: #0f0;
+            color: #000;
+            border: none;
+            padding: 12px 24px;
+            font-family: inherit;
+            cursor: pointer;
+            margin: 10px;
+        }
+        
+        .click-me {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 48px;
+            color: #0f0;
+            text-shadow: 0 0 30px #0f0;
+            cursor: pointer;
+            animation: pulse 2s infinite;
+        }
+
+        /* Navigation Buttons */
+        .nav-btn {
+            position: absolute;
+            bottom: 25px;
+            width: 45px;
+            height: 45px;
+            background: rgba(255, 0, 0, 0.9);
+            color: white;
+            border: 3px solid #fff;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+            z-index: 300;
+            box-shadow: 0 0 15px rgba(255, 0, 0, 0.8);
+            transition: all 0.2s;
+        }
+        
+        .nav-btn:hover {
+            transform: scale(1.15);
+            background: #ff0000;
+        }
+
+        .exit-btn {
+            left: 25px;
+        }
+
+        .shutdown-btn {
+            right: 25px;
+            background: rgba(200, 0, 0, 0.95);
+        }
+        
+        .shutdown-btn:hover {
+            background: #cc0000;
+        }
+
+        @keyframes glitch {
+            0% { transform: translate(0); }
+            20% { transform: translate(-2px, 2px); }
+            40% { transform: translate(-2px, -2px); }
+            60% { transform: translate(2px, 2px); }
+            80% { transform: translate(2px, -2px); }
+            100% { transform: translate(0); }
+        }
+        
+        @keyframes blink {
+            50% { opacity: 0; }
+        }
+        
+        @keyframes pulse {
+            0% { transform: translate(-50%, -50%) scale(1); }
+            50% { transform: translate(-50%, -50%) scale(1.1); }
+            100% { transform: translate(-50%, -50%) scale(1); }
+        }
+    </style>
+</head>
+<body>
+    <div class="phone">
+        <!-- Boot Screen -->
+        <div id="boot-screen" class="boot-screen">
+            <div class="logo">GetAJobOS</div>
+            <div class="loading">LOADING...</div>
+        </div>
+
+        <!-- Home Screen -->
+        <div id="home-screen" class="home-screen">
+            <div class="status-bar">
+                <span>9:41</span>
+                <span>GetAJobOS v1.0</span>
+                <span>100%</span>
+            </div>
+            <div style="position: relative; flex: 1;">
+                <div class="wallpaper-text">GET A JOB</div>
+            </div>
+            <div class="apps">
+                <div class="app-icon browser-icon" onclick="openBrowser()">
+                    <div style="font-size: 24px;">🌐</div>
+                    <div>Browser</div>
+                </div>
+                <div class="app-icon trick-icon" onclick="openTrickApp()">
+                    <div style="font-size: 24px;">🪄</div>
+                    <div>Trick</div>
+                </div>
+            </div>
+
+            <!-- Bottom Navigation Buttons -->
+            <div class="nav-btn exit-btn" onclick="exitCurrentApp()" title="Exit App">×</div>
+            <div class="nav-btn shutdown-btn" onclick="shutdownOS()" title="Shutdown / Refresh">⏻</div>
+        </div>
+
+        <!-- Browser Modal -->
+        <div id="browser-modal" class="modal">
+            <div class="modal-header">
+                <span>getajob.co/new/NewTab.html</span>
+                <span onclick="closeModal('browser-modal')" class="close-btn">✕</span>
+            </div>
+            <div class="browser-content">
+                <h2 style="text-align:center; color:#0f0; margin:20px 0;">GetAJob</h2>
+                <input type="text" id="search-input" class="fake-search" placeholder="Search the web..." onkeypress="if(event.key === 'Enter') fakeSearch()">
+                <div id="search-results" class="search-results"></div>
+            </div>
+        </div>
+
+        <!-- Trick App Modal -->
+        <div id="trick-modal" class="modal">
+            <div class="modal-header">
+                <span>Tricked</span>
+                <span onclick="closeModal('trick-modal')" class="close-btn">✕</span>
+            </div>
+            <div class="browser-content" style="text-align:center; padding-top:80px;">
+                <h2 style="color:#f0f;">Download .trick file</h2>
+                <p style="margin:30px 0; color:#0ff;">Your device needs a .trick update</p>
+                <button onclick="downloadTrickFile()">DOWNLOAD .trick</button>
+            </div>
+        </div>
+
+        <!-- Installer Modal -->
+        <div id="installer-modal" class="modal">
+            <div class="modal-header">
+                <span>Installing Get A Job Browser...</span>
+                <span onclick="closeModal('installer-modal')" class="close-btn">✕</span>
+            </div>
+            <div class="installer">
+                <div id="install-progress" style="margin:40px 0; font-size:18px;">Installing...</div>
+                <button onclick="finishInstall()" id="install-btn" style="display:none;">FINISH INSTALL</button>
+            </div>
+        </div>
+
+        <!-- New Browser Modal -->
+        <div id="new-browser-modal" class="modal">
+            <div class="modal-header">
+                <span>Trickl.html</span>
+                <span onclick="closeModal('new-browser-modal')" class="close-btn">✕</span>
+            </div>
+            <div class="browser-content" style="text-align:center; padding-top:120px;">
+                <div onclick="clickMe()" class="click-me">CLICK ME</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Boot sequence
+        setTimeout(() => {
+            document.getElementById('boot-screen').style.display = 'none';
+            document.getElementById('home-screen').style.display = 'flex';
+        }, 5000);
+
+        function openBrowser() {
+            document.getElementById('browser-modal').style.display = 'flex';
+            document.getElementById('search-results').innerHTML = `
+                <div style="color:#0f0; text-align:center; margin:20px;">
+                    Welcome to GetAJob Search
+                </div>
+            `;
+        }
+
+        function fakeSearch() {
+            const input = document.getElementById('search-input');
+            const results = document.getElementById('search-results');
+            
+            results.innerHTML = `
+                <div style="color:#ff0; margin:15px 0;">Ignoring your search: "${input.value}"</div>
+                <div class="fake-link" onclick="showDownloadLink()">
+                    <strong>Download Get A Job Browser</strong><br>
+                    <small>getajob.co/download/trick-browser.trick</small>
+                </div>
+            `;
+        }
+
+        function showDownloadLink() {
+            const results = document.getElementById('search-results');
+            results.innerHTML += `
+                <div style="margin-top:20px; padding:15px; background:#300; border:2px solid #f00;">
+                    <strong style="color:#f00;">DOWNLOAD SUCCESSFUL</strong><br>
+                    <span onclick="openTrickApp()" style="color:#0ff; cursor:pointer; text-decoration:underline;">
+                        Open in Tricked
+                    </span>
+                </div>
+            `;
+        }
+
+        function openTrickApp() {
+            document.getElementById('trick-modal').style.display = 'flex';
+        }
+
+        function downloadTrickFile() {
+            document.getElementById('trick-modal').style.display = 'none';
+            const installer = document.getElementById('installer-modal');
+            installer.style.display = 'flex';
+            
+            let progress = 0;
+            const progressText = document.getElementById('install-progress');
+            
+            const interval = setInterval(() => {
+                progress += Math.random() * 15;
+                if (progress > 100) progress = 100;
+                progressText.textContent = `Installing... ${Math.floor(progress)}%`;
+                
+                if (progress >= 100) {
+                    clearInterval(interval);
+                    document.getElementById('install-btn').style.display = 'block';
+                }
+            }, 200);
+        }
+
+        function finishInstall() {
+            document.getElementById('installer-modal').style.display = 'none';
+            
+            const appsContainer = document.querySelector('.apps');
+            const newApp = document.createElement('div');
+            newApp.className = 'app-icon';
+            newApp.style.background = '#00ff00';
+            newApp.innerHTML = `
+                <div style="font-size:24px;">📱</div>
+                <div>Get A Job<br>Browser</div>
+            `;
+            newApp.onclick = openNewBrowser;
+            appsContainer.appendChild(newApp);
+            
+            alert("✅ Get A Job Browser installed successfully!");
+        }
+
+        function openNewBrowser() {
+            document.getElementById('new-browser-modal').style.display = 'flex';
+        }
+
+        function clickMe() {
+            const clickMe = document.querySelector('.click-me');
+            clickMe.style.transition = 'all 0.3s';
+            clickMe.style.transform = 'translate(-50%, -50%) scale(0.8)';
+            setTimeout(() => location.reload(), 400);
+        }
+
+        function closeModal(modalId) {
+            document.getElementById(modalId).style.display = 'none';
+        }
+
+        // Exit current app (closes any open modal or returns to home)
+        function exitCurrentApp() {
+            const modals = document.querySelectorAll('.modal');
+            let closedAny = false;
+            
+            modals.forEach(modal => {
+                if (modal.style.display === 'flex') {
+                    modal.style.display = 'none';
+                    closedAny = true;
+                }
+            });
+            
+            if (!closedAny) {
+                alert("No app is currently open.\nUse the power button (bottom right) to shutdown.");
+            }
+        }
+
+        // Shutdown / Refresh
+        function shutdownOS() {
+            if (confirm("Shutdown GetAJobOS and restart?")) {
+                document.getElementById('home-screen').style.display = 'none';
+                const boot = document.getElementById('boot-screen');
+                boot.style.display = 'flex';
+                boot.innerHTML = `
+                    <div class="logo">GetAJobOS</div>
+                    <div class="loading">SHUTTING DOWN...</div>
+                `;
+                
+                setTimeout(() => {
+                    location.reload();
+                }, 1200);
+            }
+        }
+
+        // Keyboard shortcut
+        document.addEventListener('keydown', function(e) {
+            if (e.key === '/' && document.getElementById('browser-modal').style.display === 'flex') {
+                document.getElementById('search-input').focus();
+            }
+        });
+    </script>
+</body>
+</html>
